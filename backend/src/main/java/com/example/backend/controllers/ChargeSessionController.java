@@ -1,24 +1,38 @@
 package com.example.backend.controllers;
 
 import com.example.backend.model.ChargingSession;
-import com.example.backend.services.ChargeSessionService;
+import com.example.backend.services.ChargingSessionService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/chargeSessions")
 public class ChargeSessionController {
 
-    private final ChargeSessionService chargeSessionService;
+    private final ChargingSessionService chargingSessionService;
 
     @GetMapping
-    public List<ChargingSession> getChargingSessions(@RequestParam LocalDateTime fromDate,
-                                                     @RequestParam LocalDateTime toDate) {
-        return chargeSessionService.getChargingSessions(fromDate, toDate);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<ChargingSession> getChargingSessions(@RequestParam String fromDate,
+                                                                  @RequestParam String toDate) {
+        return chargingSessionService.getChargingSessions(fromDate, toDate);
+    }
+
+    @PostMapping("/start")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    public void startChargeSession(@RequestParam String uniqueSerialNumber, @RequestParam String connector) {
+        chargingSessionService.startChargeSession(uniqueSerialNumber, connector);
+    }
+
+    @PostMapping("/end")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    public void endChargeSession(@RequestParam String uniqueSerialNumber,
+                                 @RequestParam String connector,
+                                 @RequestParam String finalMeterValue) {
+        chargingSessionService.endChargeSession(uniqueSerialNumber, connector, finalMeterValue);
     }
 }

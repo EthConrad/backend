@@ -16,9 +16,9 @@ public class ChargingSession {
 
     @JoinColumn(name = "chargePoint_id", nullable = false)
     @OneToOne
-    private ChargePoint chargePointId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private ChargePoint chargePoint;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String initialMeterValue;
     private String finalMeterValue;
     private String errorMessage;
