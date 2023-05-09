@@ -24,8 +24,9 @@ public class ChargeSessionController {
 
     @PostMapping("/start")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    public void startChargeSession(@RequestParam String uniqueSerialNumber, @RequestParam String connector) {
-        chargingSessionService.startChargeSession(uniqueSerialNumber, connector);
+    public void startChargeSession(@RequestParam String uniqueSerialNumber, @RequestParam String connector,
+                                   @RequestParam String vehicleReg) {
+        chargingSessionService.startChargeSession(uniqueSerialNumber, connector, vehicleReg);
     }
 
     @PostMapping("/end")

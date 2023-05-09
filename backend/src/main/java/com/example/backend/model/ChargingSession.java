@@ -14,12 +14,17 @@ public class ChargingSession {
     @Id
     private String id;
 
-    @JoinColumn(name = "chargePoint_id", nullable = false)
+    @JoinColumn(name = "CHARGEPOINT_ID", nullable = false)
     @OneToOne
     private ChargePoint chargePoint;
+    @Column(name = "STARTDATE")
     private LocalDateTime startDate;
+    @Column(name = "ENDDATE")
     private LocalDateTime endDate;
+    @Column(name = "INITIALMETER_VALUE")
     private String initialMeterValue;
+    @Column(name = "FINALMETER_VALUE")
     private String finalMeterValue;
+    @Column(name = "ERROR_MESSAGE")
     private String errorMessage;
 }

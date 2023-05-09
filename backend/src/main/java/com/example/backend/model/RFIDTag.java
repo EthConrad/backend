@@ -12,7 +12,6 @@ public class RFIDTag {
 
     @Id
     private long id;
-    @JoinColumn(name = "VEHICLE_ID")
-    @OneToOne
-    private Vehicle vehicle;
+    @Column(name = "REGISTRATION_NUMBER")
+    private String registrationNumber;
 }

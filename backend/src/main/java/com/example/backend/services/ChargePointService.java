@@ -32,4 +32,8 @@ public class ChargePointService {
         }
         return chargePoint;
     }
+
+    protected void updateChargePoint(ChargePoint chargePoint) {
+        repository.save(chargePoint);
+    }
 }

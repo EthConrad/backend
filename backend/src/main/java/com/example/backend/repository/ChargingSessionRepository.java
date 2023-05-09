@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Long> {
 
-    List<ChargingSession> findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDateTime startDate,
+    List<ChargingSession> findAllByStartDateGreaterThanEqualAndEndDateLessThanEqual(LocalDateTime startDate,
                                                                                     LocalDateTime endDate);
 
     ChargingSession findFirstByChargePointIdOrderByEndDateDesc(long chargePointId);

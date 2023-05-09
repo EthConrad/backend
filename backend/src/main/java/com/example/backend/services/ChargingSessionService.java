@@ -2,6 +2,7 @@ package com.example.backend.services;
 
 import com.example.backend.model.ChargePoint;
 import com.example.backend.model.ChargingSession;
+import com.example.backend.model.RFIDTag;
 import com.example.backend.repository.ChargingSessionRepository;
 import com.example.backend.utils.DateTimeConverter;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,15 @@ public class ChargingSessionService {
     private final ChargingSessionRepository chargingSessionRepository;
     private final ChargePointService chargePointService;
 
+    private final RfidTagService rfidTagService;
+
+    // Unit tests to be written here must check the following scenarios:
+    // 1 - Happy path, fromDate is before toDate.
+    // Would need at least 3 ChargingSessions one before the dates, one in the middle and one after
+    // 2 - FromDate is after toDate, should throw Exception
+    // We do not need to check invalid dates because they are unit tested in DateTimeConverter
+    // 3 - FromDate is before toDate but no sessions are returned. Ensure empty list is returned
+
     public List<ChargingSession> getChargingSessions(String fromDate, String toDate) {
         LocalDateTime convertedStartDate = DateTimeConverter.convertDateTime(fromDate);
         LocalDateTime convertedEndDate = DateTimeConverter.convertDateTime(toDate);
@@ -25,12 +35,14 @@ public class ChargingSessionService {
             throw new IllegalArgumentException("End Date must be after Start Date");
         }
 
-        return chargingSessionRepository.findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(convertedStartDate, convertedEndDate);
+        return chargingSessionRepository.findAllByStartDateGreaterThanEqualAndEndDateLessThanEqual(convertedStartDate, convertedEndDate);
     }
 
-    public void startChargeSession(String uniqueSerialNumber, String connector) {
+    public void startChargeSession(String uniqueSerialNumber, String connector, String vehicleReg) {
 
         ChargePoint chargePoint = chargePointService.getChargePoint(uniqueSerialNumber, connector);
+
+        RFIDTag rfidTag = rfidTagService.getRfidTagByRegNumber(vehicleReg);
 
         ChargingSession session = chargingSessionRepository.findFirstByChargePointIdOrderByEndDateDesc(chargePoint.getId());
 
@@ -48,7 +60,9 @@ public class ChargingSessionService {
         }
 
         newSession.setStartDate(LocalDateTime.now());
+        chargePoint.setRfidTag(rfidTag);
         newSession.setChargePoint(chargePoint);
+        chargePointService.updateChargePoint(chargePoint);
         chargingSessionRepository.save(newSession);
     }
 
@@ -77,9 +91,14 @@ public class ChargingSessionService {
             session.setEndDate(LocalDateTime.now());
             session.setFinalMeterValue(finalMeterValue);
         } else {
+            // Depending on desired functionality here, we may want to still set endDate and final meter value
+            // However, if the chargepoint needs investigating, it may be best to leave it open in an invalid state
             session.setErrorMessage(errorMessage);
         }
 
+        // Remove relationship between chargepoint and vehicle so that it can be swapped to another chargepoint
+        chargePoint.setRfidTag(null);
+        chargePointService.updateChargePoint(chargePoint);
         chargingSessionRepository.save(session);
     }
 

@@ -15,9 +15,9 @@ import lombok.Setter;
 public class ChargePoint {
     @Id
     private long id;
-    @JoinColumn(name = "CUSTOMER_ID")
-    @ManyToOne
-    private Customer customer;
+    @JoinColumn(name = "RFID_TAG_ID")
+    @OneToOne
+    private RFIDTag rfidTag;
     @Column(name = "UNIQUE_SERIAL_NUMBER")
     private String uniqueSerialNumber;
     // A charge point can have 1 or more connectorNumbers. I have assumed these are unique, hence, using a set
