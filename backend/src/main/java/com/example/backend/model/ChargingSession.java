@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Table(name="CHARGING_SESSION")
 public class ChargingSession {
     @Id
-    private String id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private long id;
 
     @JoinColumn(name = "CHARGEPOINT_ID", nullable = false)
     @OneToOne
