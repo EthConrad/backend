@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.ChargeDTO;
 import com.example.backend.model.ChargingSession;
 import com.example.backend.services.ChargingSessionService;
 import lombok.AllArgsConstructor;
@@ -24,16 +25,13 @@ public class ChargeSessionController {
 
     @PostMapping("/start")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    public void startChargeSession(@RequestParam String uniqueSerialNumber, @RequestParam String connector,
-                                   @RequestParam String vehicleReg) {
-        chargingSessionService.startChargeSession(uniqueSerialNumber, connector, vehicleReg);
+    public void startChargeSession(@RequestBody ChargeDTO dto) {
+        chargingSessionService.startChargeSession(dto.getUniqueSerialNumber(), dto.getConnector(), dto.getVehicleReg());
     }
 
     @PostMapping("/end")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    public void endChargeSession(@RequestParam String uniqueSerialNumber,
-                                 @RequestParam String connector,
-                                 @RequestParam String finalMeterValue) {
-        chargingSessionService.endChargeSession(uniqueSerialNumber, connector, finalMeterValue);
+    public void endChargeSession(@RequestBody ChargeDTO dto) {
+        chargingSessionService.endChargeSession(dto.getUniqueSerialNumber(), dto.getConnector(), dto.getFinalMeterValue());
     }
 }

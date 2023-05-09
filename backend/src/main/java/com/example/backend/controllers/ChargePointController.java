@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.ChargeDTO;
 import com.example.backend.services.ChargePointService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class ChargePointController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void addConnector(@RequestParam String uniqueSerialNumber, @RequestParam String connector) {
-        chargePointService.addConnector(uniqueSerialNumber, connector);
+    public void addConnector(@RequestBody ChargeDTO dto) {
+        chargePointService.addConnector(dto.getUniqueSerialNumber(), dto.getConnector());
     }
 }
